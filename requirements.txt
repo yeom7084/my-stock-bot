@@ -1,0 +1,5 @@
+python-telegram-bot
+google-genai
+schedule
+requests
+beautifulsoup4
