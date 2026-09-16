@@ -88,7 +88,7 @@ def get_naver_finance_news():
 def call_gemini(prompt: str) -> str:
     try:
         response = gemini_client.models.generate_content(
-            model='gemini-3.6-flash',
+            model='gemini-3.1-flash',
             contents=prompt,
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_INSTRUCTION,
