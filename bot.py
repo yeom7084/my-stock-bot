@@ -273,6 +273,28 @@ def run_dummy_server():
 # =========================================================
 # 메인 실행부
 # =========================================================
+import time
+
+def get_gemini_analysis(prompt):
+    # 공식 권장 모델 사용
+    model_name = "gemini-3.6-flash"
+    
+    # 503 과부하 발생 시 최대 3번까지 자동 재시도
+    for attempt in range(3):
+        try:
+            response = client.models.generate_content(
+                model=model_name,
+                contents=prompt
+            )
+            return response.text
+        except Exception as e:
+            # 503 에러 발생 시 2초 대기 후 재시도
+            if "503" in str(e) and attempt < 2:
+                time.sleep(2)
+                continue
+            # 다른 에러이거나 3회 재시도 실패 시 에러 문구 출력
+            return f"⚠️ 분석 모델 호출 중 오류가 발생했습니다:\n{e}"
+
 if __name__ == "__main__":
     # 봇이 실행되기 전에 백그라운드로 가짜 서버를 끕니다.
     threading.Thread(target=run_dummy_server, daemon=True).start()
