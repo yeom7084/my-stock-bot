@@ -250,5 +250,32 @@ def main():
     print("🚀 주식 리서치 AI 텔레그램 봇이 정상 실행되었습니다!")
     app.run_polling()
 
+# (기존 bot.py의 다른 함수들...)
+
+# =========================================================
+# Render 타임아웃 방지용 가짜 웹서버 (main 위에 추가)
+# =========================================================
+import os
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import threading
+
+class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is running!")
+
+def run_dummy_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(('0.0.0.0', port), SimpleHTTPRequestHandler)
+    server.serve_forever()
+
+# =========================================================
+# 메인 실행부
+# =========================================================
 if __name__ == "__main__":
+    # 봇이 실행되기 전에 백그라운드로 가짜 서버를 끕니다.
+    threading.Thread(target=run_dummy_server, daemon=True).start()
+    
+    # 기존 텔레그램 봇 실행
     main()
